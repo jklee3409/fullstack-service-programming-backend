@@ -1,4 +1,4 @@
-package com.mycom.myapp.health;
+package com.mycom.myapp.controller.health;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
