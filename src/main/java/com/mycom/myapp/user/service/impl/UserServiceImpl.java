@@ -1,5 +1,7 @@
 package com.mycom.myapp.user.service.impl;
 
+import static com.mycom.myapp.auth.entity.enums.Role.ROLE_USER;
+
 import com.mycom.myapp.user.entity.User;
 import com.mycom.myapp.user.repository.UserRepository;
 import com.mycom.myapp.user.service.UserService;
@@ -31,11 +33,11 @@ public class UserServiceImpl implements UserService {
             return foundUser.get().update(nickname, avatarUrl);
         } else {
             User newUser = User.builder()
-                .githubId(githubId)
-                .nickname(nickname)
-                .avatarUrl(avatarUrl)
-                .role(ROLE_USER)
-                .build();
+                    .githubId(githubId)
+                    .nickname(nickname)
+                    .avatarUrl(avatarUrl)
+                    .role(ROLE_USER)
+                    .build();
 
             log.info("Registering new user with GitHub ID: {}", githubId);
             return userRepository.save(newUser);
