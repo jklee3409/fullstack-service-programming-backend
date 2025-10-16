@@ -1,7 +1,7 @@
 package com.mycom.myapp.common.dto.base;
 
 
-import com.mycom.myapp.exception.code.ErrorCode;
+import com.mycom.myapp.common.exception.code.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
 

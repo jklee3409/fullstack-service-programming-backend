@@ -1,4 +1,4 @@
-package com.mycom.myapp.exception;
+package com.mycom.myapp.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

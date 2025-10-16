@@ -1,4 +1,4 @@
-package com.mycom.myapp.exception.code;
+package com.mycom.myapp.common.exception.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
