@@ -1,9 +1,10 @@
-package com.mycom.myapp.service.impl;
+package com.mycom.myapp.auth.service.impl;
 
-import com.mycom.myapp.client.GithubClient;
-import com.mycom.myapp.dto.AuthTokens;
-import com.mycom.myapp.entity.User;
-import com.mycom.myapp.service.OAuthService;
+import com.mycom.myapp.auth.client.GithubClient;
+import com.mycom.myapp.auth.dto.AuthTokens;
+import com.mycom.myapp.user.entity.User;
+import com.mycom.myapp.auth.service.OAuthService;
+import com.mycom.myapp.user.service.impl.UserServiceImpl;
 import jakarta.transaction.Transactional;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.mycom.myapp.client;
+package com.mycom.myapp.auth.client;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

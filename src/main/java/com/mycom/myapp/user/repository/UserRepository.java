@@ -1,6 +1,6 @@
-package com.mycom.myapp.repository;
+package com.mycom.myapp.user.repository;
 
-import com.mycom.myapp.entity.User;
+import com.mycom.myapp.user.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

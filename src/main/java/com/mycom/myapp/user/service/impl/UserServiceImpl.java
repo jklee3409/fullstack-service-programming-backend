@@ -1,10 +1,8 @@
-package com.mycom.myapp.service.impl;
+package com.mycom.myapp.user.service.impl;
 
-import static com.mycom.myapp.entity.enums.Role.*;
-
-import com.mycom.myapp.entity.User;
-import com.mycom.myapp.repository.UserRepository;
-import com.mycom.myapp.service.UserService;
+import com.mycom.myapp.user.entity.User;
+import com.mycom.myapp.user.repository.UserRepository;
+import com.mycom.myapp.user.service.UserService;
 import jakarta.transaction.Transactional;
 import java.util.Map;
 import java.util.Optional;

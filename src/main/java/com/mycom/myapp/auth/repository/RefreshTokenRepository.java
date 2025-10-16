@@ -1,6 +1,6 @@
-package com.mycom.myapp.repository;
+package com.mycom.myapp.auth.repository;
 
-import com.mycom.myapp.entity.RefreshToken;
+import com.mycom.myapp.auth.entity.RefreshToken;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

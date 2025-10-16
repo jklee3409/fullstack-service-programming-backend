@@ -1,8 +1,8 @@
-package com.mycom.myapp.service.impl;
+package com.mycom.myapp.auth.service.impl;
 
-import com.mycom.myapp.entity.RefreshToken;
-import com.mycom.myapp.entity.User;
-import com.mycom.myapp.repository.RefreshTokenRepository;
+import com.mycom.myapp.auth.entity.RefreshToken;
+import com.mycom.myapp.user.entity.User;
+import com.mycom.myapp.auth.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
