@@ -23,14 +23,16 @@ public class OAuthServiceImpl implements OAuthService {
     @Transactional
     public AuthTokens loginWithGithub(String code) {
         Map<String, String> tokenResponse = githubClient.getAccessToken(code);
-        String accessToken = tokenResponse.get("access_token");
-        log.info("GitHub access token received: {}", accessToken);
+        String githubAccessToken = tokenResponse.get("access_token");
+        log.info("GitHub access token received");
 
-        Map<String, Object> userInfo = githubClient.getUserInfo(accessToken);
+        Map<String, Object> userInfo = githubClient.getUserInfo(githubAccessToken);
         log.info("GitHub user info retrieved: {}", userInfo);
 
         User user = userService.getOrRegisterUser(userInfo);
         log.info("Authenticated User ID: {}", user.getId());
+
+        user.updateGithubAccessToken(githubAccessToken);
 
         String jwtAccessToken = jwtService.generateAccessToken(user);
         String jwtRefreshToken = jwtService.generateAndSaveRefreshToken(user);

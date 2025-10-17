@@ -15,3 +15,8 @@ github:
   client:
     id: ${GITHUB_CLIENT_ID}
     secret: ${GITHUB_CLIENT_SECRET}
+  api:
+    base-url: https://api.github.com
+webhook:
+  callback-url: ${WEBHOOK_CALLBACK_URL}
+  secret: ${WEBHOOK_SECRET}

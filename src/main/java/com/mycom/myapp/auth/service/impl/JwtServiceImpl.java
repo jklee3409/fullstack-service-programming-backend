@@ -2,7 +2,7 @@ package com.mycom.myapp.auth.service.impl;
 
 import com.mycom.myapp.auth.entity.RefreshToken;
 import com.mycom.myapp.common.exception.code.ErrorCode;
-import com.mycom.myapp.common.exception.custom.CustomJwtException;
+import com.mycom.myapp.common.exception.custom.auth.CustomJwtException;
 import com.mycom.myapp.user.entity.User;
 import com.mycom.myapp.auth.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;

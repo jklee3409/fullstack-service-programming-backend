@@ -1,6 +1,7 @@
 package com.mycom.myapp.user.entity;
 
 import com.mycom.myapp.auth.entity.enums.Role;
+import com.mycom.myapp.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,9 +40,16 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "github_access_token")
+    private String githubAccessToken;
+
     public User update(String nickname, String avatarUrl) {
         this.nickname = nickname;
         this.avatarUrl = avatarUrl;
         return this;
+    }
+
+    public void updateGithubAccessToken(String githubAccessToken) {
+        this.githubAccessToken = githubAccessToken;
     }
 }
