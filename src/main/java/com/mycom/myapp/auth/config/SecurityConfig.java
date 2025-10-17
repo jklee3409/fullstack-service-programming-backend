@@ -1,6 +1,7 @@
 package com.mycom.myapp.auth.config;
 
 import com.mycom.myapp.auth.filter.JwtAuthenticationFilter;
+import com.mycom.myapp.common.constant.FilterConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +29,7 @@ public class SecurityConfig {
 
                 // HTTP 요청에 대한 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // 인증 관련 엔드포인트
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Swagger 관련 엔드포인트
+                        .requestMatchers(FilterConstant.WHITE_LIST).permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
 
