@@ -70,7 +70,7 @@ public class GithubWebhookService {
                 .map(GetRepositoryResponse::getHtml_url);
 
         return Mono.zip(createWebhookMono, getRepoUrlMono)
-                .map(tuple -> new WebhookResult(tuple.getT2(), tuple.getT1())); // T1: createWebhook 결과, T2: getRepoUrl 결과
+                .map(tuple -> new WebhookResult(tuple.getT1(), tuple.getT2())); // T1: getRepoUrl 결과, T2: createWebhook 결과
     }
 
     private String[] isValidRepoFullName(String repoFullName) {
