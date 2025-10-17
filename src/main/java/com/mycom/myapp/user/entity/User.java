@@ -39,9 +39,16 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "github_access_token")
+    private String githubAccessToken;
+
     public User update(String nickname, String avatarUrl) {
         this.nickname = nickname;
         this.avatarUrl = avatarUrl;
         return this;
+    }
+
+    public void updateGithubAccessToken(String githubAccessToken) {
+        this.githubAccessToken = githubAccessToken;
     }
 }
