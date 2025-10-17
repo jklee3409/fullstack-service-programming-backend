@@ -1,4 +1,4 @@
-package com.mycom.myapp.common.exception.custom;
+package com.mycom.myapp.common.exception.custom.auth;
 
 import com.mycom.myapp.common.exception.code.ErrorCode;
 import lombok.Getter;
