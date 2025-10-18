@@ -20,3 +20,6 @@ github:
 webhook:
   callback-url: ${WEBHOOK_CALLBACK_URL}
   secret: ${WEBHOOK_SECRET}
+springdoc:
+  swagger-ui:
+    path: ${SWAGGER_PATH}

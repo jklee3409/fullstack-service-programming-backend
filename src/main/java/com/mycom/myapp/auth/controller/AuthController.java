@@ -2,20 +2,30 @@ package com.mycom.myapp.auth.controller;
 
 import com.mycom.myapp.auth.dto.AuthTokens;
 import com.mycom.myapp.auth.dto.request.GithubLoginRequestDto;
+import com.mycom.myapp.auth.dto.response.RefreshTokenResponseDto;
 import com.mycom.myapp.auth.service.OAuthService;
+import com.mycom.myapp.auth.service.impl.AuthServiceImpl;
 import com.mycom.myapp.common.dto.base.BaseResponseDto;
+import com.mycom.myapp.common.exception.code.ErrorCode;
+import com.mycom.myapp.common.exception.custom.auth.CustomJwtException;
+import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "인증 API", description = "사용자 로그인, 로그아웃 등 인증 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
     private final OAuthService oAuthService;
+    private final AuthServiceImpl authService;
 
     @PostMapping("/login/github")
     @Operation(summary = "GitHub 로그인 API", description = """
@@ -44,6 +54,24 @@ public class AuthController {
     public BaseResponseDto<AuthTokens> githubLogin(@RequestBody GithubLoginRequestDto request) {
         AuthTokens authTokens = oAuthService.loginWithGithub(request.getCode());
         return BaseResponseDto.success(authTokens);
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "토큰 리프레시 API", description = """
+            ## 리프레시 토큰을 사용하여 새로운 액세스 토큰과 리프레시 토큰을 발급합니다.
+            클라이언트로부터 전달받은 리프레시 토큰을 검증하고, 유효한 경우 새로운 액세스 토큰과 리프레시 토큰을 생성하여 반환합니다.           
+            """)
+    public BaseResponseDto<RefreshTokenResponseDto> refreshTokens(
+        @RequestHeader("Authorization-Refresh") String refreshToken
+    ) {
+        if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        } else {
+            throw new CustomJwtException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        RefreshTokenResponseDto response = authService.refreshTokens(refreshToken);
+        return BaseResponseDto.success(response);
     }
 }
 
