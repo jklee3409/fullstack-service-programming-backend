@@ -11,17 +11,26 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           prepare_sql: false
+
 jwt:
   secret: ${JWT_SECRET}
+
 github:
   client:
     id: ${GITHUB_CLIENT_ID}
     secret: ${GITHUB_CLIENT_SECRET}
   api:
     base-url: https://api.github.com
+
 webhook:
   callback-url: ${WEBHOOK_CALLBACK_URL}
   secret: ${WEBHOOK_SECRET}
+
 springdoc:
   swagger-ui:
     path: ${SWAGGER_PATH}
+
+gemini:
+    api-key: ${GEMINI_API_KEY}
+    model: gemini-2.5-flash
+    temperature: 0.8
