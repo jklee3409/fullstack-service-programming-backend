@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ClientHttpResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -63,8 +65,9 @@ public class GithubWebhookService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
-                        response.bodyToMono(String.class)
-                                .flatMap(errorBody -> Mono.error(new GithubApiException(ErrorCode.GITHUB_API_ERROR)))
+                        logGithubError(response).flatMap(errorBody ->
+                                Mono.error(new GithubApiException(ErrorCode.GITHUB_API_ERROR))
+                        )
                 )
                 .bodyToMono(GetRepositoryResponse.class)
                 .map(GetRepositoryResponse::getHtml_url);
@@ -91,6 +94,15 @@ public class GithubWebhookService {
         );
         return new CreateWebhookRequest("web", true,
                 new String[]{"push"}, config);
+    }
+
+    private Mono<String> logGithubError(ClientResponse response) {
+        return response.bodyToMono(String.class)
+                .defaultIfEmpty("[Empty Response Body]")
+                .map(errorBody -> {
+                    log.error("GitHub API Error: Status Code = {}, Response Body = {}", response.statusCode(), errorBody);
+                    return errorBody;
+                });
     }
 
     @Getter
