@@ -9,6 +9,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          prepare_sql: false
 jwt:
   secret: ${JWT_SECRET}
 github:
