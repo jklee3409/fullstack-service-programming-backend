@@ -51,6 +51,7 @@ dependencies {
 
     // Spring AI & Gemini
     implementation 'org.springframework.ai:spring-ai-google-gemini-spring-boot-starter'
+    implementation 'com.google.genai:google-genai:1.23.0'
 
     // Test
     testImplementation 'org.springframework.security:spring-security-test'
