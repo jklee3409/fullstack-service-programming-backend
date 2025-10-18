@@ -62,10 +62,24 @@ public class JwtServiceImpl {
         return refreshToken;
     }
 
-    // 토큰 검증
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    // 토큰 유효성 검증
+    public boolean validateToken(String token) {
+        try {
+            extractAllClaims(token);
+            return true;
+        } catch (Exception e) {
+            log.error("Token validation failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    // 토큰 사용자 일치 여부 검증
+    public boolean isValidToken(String token, UserDetails userDetails) {
+        if (!validateToken(token)) {
+            return false;
+        }
         final String githubId = extractGithubId(token);
-        return (githubId.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (githubId.equals(userDetails.getUsername()));
     }
 
     // GitHub ID 추출
@@ -106,7 +120,8 @@ public class JwtServiceImpl {
                     .getBody();
 
         } catch (ExpiredJwtException e) {
-            return e.getClaims();
+            log.warn("Expired JWT token: {}", e.getMessage());
+            throw e;
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token: {}", e.getMessage());
             throw new CustomJwtException(ErrorCode.UNSUPPORTED_JWT);
@@ -119,15 +134,6 @@ public class JwtServiceImpl {
         } catch (IllegalArgumentException e) {
             log.error("JWT claims string is empty: {}", e.getMessage());
             throw new CustomJwtException(ErrorCode.EMPTY_JWT_CLAIMS);
-        }
-    }
-
-    // 토큰 만료 여부 확인
-    private boolean isTokenExpired(String token) {
-        try {
-            return extractExpiration(token).before(new Date());
-        } catch (ExpiredJwtException e) {
-            return true;
         }
     }
 

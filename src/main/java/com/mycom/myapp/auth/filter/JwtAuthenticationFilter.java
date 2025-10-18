@@ -6,6 +6,8 @@ import com.mycom.myapp.common.constant.FilterConstant;
 import com.mycom.myapp.common.dto.base.BaseResponseDto;
 import com.mycom.myapp.common.dto.base.ErrorResponseDto;
 import com.mycom.myapp.common.exception.code.ErrorCode;
+import com.mycom.myapp.common.exception.custom.auth.CustomJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,43 +37,53 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // 공개된 경로는 인증 없이 통과
+        if (isPassedList(request)) {
+            log.debug("[JwtFilter] No token found for pass-listed URI: {}. Passing as anonymous.", request.getRequestURI());
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
         String jwt, githubId;
 
-        // 토큰이 없는 경우
+        // 보호된 경로인데 토큰이 없는 경우
         if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
-            // 공개된 경로는 인증 없이 통과
-            if (isPassedList(request)) {
-                log.debug("[JwtFilter] No token found for pass-listed URI: {}. Passing as anonymous.", request.getRequestURI());
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            // 보호된 경로인데 토큰이 없으면 에러 반환
-            log.warn("Authorization header is missing or invalid for protected path: {}", request.getRequestURI());
+            log.warn("Authorization header is missing for protected path: {}", request.getRequestURI());
             writeErrorResponse(response, ErrorCode.MISSING_TOKEN);
             return;
         }
 
         jwt = authHeader.substring(7);
-        githubId = jwtService.extractGithubId(jwt);
 
-        // githubId가 존재하고, SecurityContext에 인증 정보가 없다면
-        if (StringUtils.hasText(githubId) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(githubId);
+        try {
+            githubId = jwtService.extractGithubId(jwt);
 
-            // 토큰이 유효하다면 SecurityContext에 인증 정보 설정
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            // SecurityContext에 인증 정보가 없는 경우에만 인증 처리
+            if (StringUtils.hasText(githubId) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(githubId);
+
+                if (jwtService.isValidToken(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else {
+                    log.warn("[JwtFilter] Invalid JWT token for URI: {}", request.getRequestURI());
+                    writeErrorResponse(response, ErrorCode.INVALID_TOKEN);
+                    return;
+                }
             }
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            log.warn("[JwtFilter] Access token has expired. URI: {}", request.getRequestURI());
+            writeErrorResponse(response, ErrorCode.EXPIRED_ACCESS_TOKEN);
+        } catch (CustomJwtException e) {
+            log.warn("[JwtFilter] Invalid JWT token. Error: {}, URI: {}", e.getErrorCode().getName(), request.getRequestURI());
+            writeErrorResponse(response, e.getErrorCode());
         }
-        filterChain.doFilter(request, response); // 다음 필터로 이동
     }
 
     private boolean isPassedList(HttpServletRequest request) {

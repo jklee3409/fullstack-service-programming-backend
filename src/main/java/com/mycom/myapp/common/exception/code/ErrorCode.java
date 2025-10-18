@@ -12,6 +12,9 @@ public enum ErrorCode {
     INVALID_SIGNATURE(10002, "INVALID_SIGNATURE", "잘못된 JWT 서명입니다."),
     EMPTY_JWT_CLAIMS(10003, "EMPTY_JWT_CLAIMS", "JWT claims이 비어있습니다."),
     MISSING_TOKEN(10004, "MISSING_TOKEN", "토큰이 존재하지 않습니다."),
+    EXPIRED_ACCESS_TOKEN(10005, "EXPIRED_ACCESS_TOKEN", "액세스 토큰이 만료되었습니다."),
+    INVALID_REFRESH_TOKEN(10006, "INVALID_REFRESH_TOKEN", "유효하지 않은 리프레시 토큰입니다."),
+    INVALID_TOKEN(10007, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),
 
     // 20000 ~ 29999: User
     USER_NOT_FOUND(20000, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
