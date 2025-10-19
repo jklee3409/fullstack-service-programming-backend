@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> foundUser = userRepository.findByGithubId(githubId);
 
         if (foundUser.isPresent()) {
-            log.info("User found with GitHub ID: {}", githubId);
+            log.info("[getOrRegisterUser] 이미 존재하는 사용자입니다 정보를 수정합니다. GitHub ID: {}", githubId);
             return foundUser.get().update(nickname, avatarUrl);
         } else {
             User newUser = User.builder()
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
                     .role(ROLE_USER)
                     .build();
 
-            log.info("Registering new user with GitHub ID: {}", githubId);
+            log.info("[getOrRegisterUser] 사용자 등록을 완료했습니다. GitHub ID: {}", githubId);
             return userRepository.save(newUser);
         }
     }

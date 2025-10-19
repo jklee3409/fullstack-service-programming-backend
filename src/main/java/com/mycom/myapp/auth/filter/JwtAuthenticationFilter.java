@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 공개된 경로는 인증 없이 통과
         if (isPassedList(request)) {
-            log.debug("[JwtFilter] No token found for pass-listed URI: {}. Passing as anonymous.", request.getRequestURI());
+            log.debug("[JwtFilter] passed-list에 대한 요청입니다. URI: {}.", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 보호된 경로인데 토큰이 없는 경우
         if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
-            log.warn("Authorization header is missing for protected path: {}", request.getRequestURI());
+            log.warn("[JwtFilter] protected path 요청에 토큰이 존재하지 않습니다: {}", request.getRequestURI());
             writeErrorResponse(response, ErrorCode.MISSING_TOKEN);
             return;
         }
@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 } else {
-                    log.warn("[JwtFilter] Invalid JWT token for URI: {}", request.getRequestURI());
+                    log.warn("[JwtFilter] 유효하지 않은 JWT 토큰입니다. URI: {}", request.getRequestURI());
                     writeErrorResponse(response, ErrorCode.INVALID_TOKEN);
                     return;
                 }
@@ -78,10 +78,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (ExpiredJwtException e) {
-            log.warn("[JwtFilter] Access token has expired. URI: {}", request.getRequestURI());
+            log.warn("[JwtFilter] Access token이 만료되었습니다. URI: {}", request.getRequestURI());
             writeErrorResponse(response, ErrorCode.EXPIRED_ACCESS_TOKEN);
         } catch (CustomJwtException e) {
-            log.warn("[JwtFilter] Invalid JWT token. Error: {}, URI: {}", e.getErrorCode().getName(), request.getRequestURI());
+            log.warn("[JwtFilter] 유효하지 않은 JWT 토큰입니다. Error: {}, URI: {}", e.getErrorCode().getName(), request.getRequestURI());
             writeErrorResponse(response, e.getErrorCode());
         }
     }

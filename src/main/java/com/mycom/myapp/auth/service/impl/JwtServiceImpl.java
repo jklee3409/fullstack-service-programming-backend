@@ -40,7 +40,7 @@ public class JwtServiceImpl {
     }
 
     public String generateAccessToken(User user) {
-        log.info("Generating access token for user ID: {}", user.getId());
+        log.info("액세스 토큰을 생성했습니다. user ID: {}", user.getId());
         return generateToken(user, accessTokenValidity);
     }
 
@@ -51,7 +51,7 @@ public class JwtServiceImpl {
 
         if (existingToken.isPresent()) {
             existingToken.get().updateToken(refreshToken);
-            log.info("Updated existing refresh token for user ID: {}", user.getId());
+            log.info("리프레쉬 토큰을 갱신하였습니다. user ID: {}", user.getId());
         } else {
             RefreshToken newRefreshToken = RefreshToken.builder()
                     .user(user)
@@ -68,7 +68,7 @@ public class JwtServiceImpl {
             extractAllClaims(token);
             return true;
         } catch (Exception e) {
-            log.error("Token validation failed: {}", e.getMessage());
+            log.error("토큰 검증에 실패하였습니다: {}", e.getMessage());
             return false;
         }
     }

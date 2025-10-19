@@ -36,6 +36,7 @@ public class AiCommitAnalysisService {
 
     public AiCommitAnalysisDto analyzeCommitDiff(String diff) {
         try {
+            log.info("[analyzeCommitDiff] 커밋 AI 분석을 위해 gemini API 호출을 시작합니다.");
             String jsonResponse = chatClient
                     .prompt()
                     .user(PROMPT_TEMPLATE.replace("{diff_content}", diff))
@@ -43,9 +44,10 @@ public class AiCommitAnalysisService {
                     .content();
 
             String cleanJson = cleanJsonString(jsonResponse);
+            log.info("[analyzeCommitDiff] gemini API JSON 응답을 수신하였습니다.");
             return objectMapper.readValue(cleanJson, AiCommitAnalysisDto.class);
         } catch (Exception e) {
-            log.error("Failed to parse Gemini API response.", e);
+            log.error("[analyzeCommitDiff] Gemini API 응답 수신 중 에러가 발생하였습니다.", e);
             throw new GeminiApiException(ErrorCode.GEMINI_API_ERROR);
         }
     }

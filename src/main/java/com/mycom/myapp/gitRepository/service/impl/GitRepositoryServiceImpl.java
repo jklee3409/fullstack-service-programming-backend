@@ -33,7 +33,7 @@ public class GitRepositoryServiceImpl implements GitRegisterService {
 
         gitRepositoryRepository.findByRepoFullName(request.getRepoFullName())
                 .ifPresent(r -> {
-                    log.info("[registerRepository] Repository already registered: {}", request.getRepoFullName());
+                    log.info("[registerRepository] 이미 존재하는 리포지토리입니다. RepoFullName: {}", request.getRepoFullName());
                     throw new DuplicationRepositoryException(ErrorCode.ALREADY_REGISTERED_REPOSITORY);
                 });
 
@@ -47,7 +47,7 @@ public class GitRepositoryServiceImpl implements GitRegisterService {
                 .webhookId(result.getWebhookId())
                 .build();
         gitRepositoryRepository.save(gitRepository);
-        log.info("[registerRepository] Registered new repository: {}", gitRepository.getRepoFullName());
+        log.info("[registerRepository] 새로운 리포지토리를 등록하였습니다. RepoFullName: {}", gitRepository.getRepoFullName());
 
         return RegisterRepositoryResponseDto.builder()
                 .id(gitRepository.getId())

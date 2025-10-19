@@ -17,6 +17,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String githubId) throws UsernameNotFoundException {
         return userRepository.findByGithubId(githubId)
                 .map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with githubId: " + githubId));
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. githubId: " + githubId));
     }
 }
