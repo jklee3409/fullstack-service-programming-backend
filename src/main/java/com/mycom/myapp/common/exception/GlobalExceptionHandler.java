@@ -6,6 +6,7 @@ import com.mycom.myapp.common.exception.custom.auth.CustomJwtException;
 import com.mycom.myapp.common.exception.custom.gemini.GeminiApiException;
 import com.mycom.myapp.common.exception.custom.gitRepo.DuplicationRepositoryException;
 import com.mycom.myapp.common.exception.custom.gitRepo.InvalidRepositoryNameException;
+import com.mycom.myapp.common.exception.custom.gitRepo.RepositoryAccessDeniedException;
 import com.mycom.myapp.common.exception.custom.gitRepo.RepositoryNotFoundException;
 import com.mycom.myapp.common.exception.custom.github.GithubApiException;
 import com.mycom.myapp.common.exception.custom.github.JsonParsingException;
@@ -63,6 +64,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(JsonParsingException.class)
     public BaseResponseDto<ErrorResponseDto> handleJsonParsingException(JsonParsingException e) {
+        log.error(e.getMessage(), e);
+        return BaseResponseDto.fail(e.getErrorCode());
+    }
+
+    @ExceptionHandler(RepositoryAccessDeniedException.class)
+    public BaseResponseDto<ErrorResponseDto> handleRepositoryAccessDeniedException(RepositoryAccessDeniedException e) {
         log.error(e.getMessage(), e);
         return BaseResponseDto.fail(e.getErrorCode());
     }
