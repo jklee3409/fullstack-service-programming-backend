@@ -5,11 +5,11 @@ import com.mycom.myapp.auth.dto.AuthTokens;
 import com.mycom.myapp.user.entity.User;
 import com.mycom.myapp.auth.service.OAuthService;
 import com.mycom.myapp.user.service.impl.UserServiceImpl;
-import jakarta.transaction.Transactional;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
