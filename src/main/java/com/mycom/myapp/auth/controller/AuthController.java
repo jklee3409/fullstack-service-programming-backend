@@ -1,5 +1,6 @@
 package com.mycom.myapp.auth.controller;
 
+import com.mycom.myapp.auth.config.CustomUserDetails;
 import com.mycom.myapp.auth.dto.AuthTokens;
 import com.mycom.myapp.auth.dto.request.GithubLoginRequestDto;
 import com.mycom.myapp.auth.dto.response.RefreshTokenResponseDto;
@@ -12,6 +13,7 @@ import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -72,6 +74,14 @@ public class AuthController {
 
         RefreshTokenResponseDto response = authService.refreshTokens(refreshToken);
         return BaseResponseDto.success(response);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃 API", description = "리프레시 토큰을 삭제하고 로그아웃을 수행합니다.")
+    public BaseResponseDto<Void> logout(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String githubId = userDetails.getUsername();
+        authService.logout(githubId);
+        return BaseResponseDto.voidSuccess();
     }
 }
 
