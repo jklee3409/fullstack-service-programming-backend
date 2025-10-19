@@ -13,6 +13,9 @@ public class FilterConstant {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/custom-swagger-ui.html"
+            "/custom-swagger-ui.html",
+
+            // Github webhook
+            "/api/webhook/github"
     };
 }
