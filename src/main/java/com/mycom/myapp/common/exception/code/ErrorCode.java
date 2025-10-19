@@ -22,9 +22,14 @@ public enum ErrorCode {
     // 30000 ~ 39999: Git Repository
     ALREADY_REGISTERED_REPOSITORY(30000, "ALREADY_REGISTERED_REPOSITORY", "이미 등록된 저장소입니다."),
     INVALID_REPOSITORY_NAME(30001, "INVALID_REPOSITORY_NAME", "올바르지 않은 저장소 이름입니다."),
+    REPOSITORY_NOT_FOUND(30002, "REPOSITORY_NOT_FOUND", "저장소를 찾을 수 없습니다."),
 
     // 40000 ~ 49999: Github API
-    GITHUB_API_ERROR(40000, "GITHUB_API_ERROR", "깃허브 API 호출 중 오류가 발생했습니다.");
+    GITHUB_API_ERROR(40000, "GITHUB_API_ERROR", "깃허브 API 호출 중 오류가 발생했습니다."),
+    JSON_PARSING_ERROR(40001, "JSON_PARSING_ERROR", "JSON 파싱 중 오류가 발생했습니다."),
+
+    // 50000 ~ 59999: Gemini API
+    GEMINI_API_ERROR(50000,  "GEMINI_API_ERROR", "Gemini API 호출 중 오류가 발생했습니다.");
 
     private final int code;
     private final String name;
