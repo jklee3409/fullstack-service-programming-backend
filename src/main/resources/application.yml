@@ -11,6 +11,18 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           prepare_sql: false
+  # Gemini API
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        chat:
+          options:
+            model: gemini-2.5-flash
+            temperature: 0.8
+        embedding:
+          project-id: ${GEMINI_PROJECT_ID}
+          location: us-central1
 
 jwt:
   secret: ${JWT_SECRET}
@@ -29,8 +41,3 @@ webhook:
 springdoc:
   swagger-ui:
     path: ${SWAGGER_PATH}
-
-gemini:
-    api-key: ${GEMINI_API_KEY}
-    model: gemini-2.5-flash
-    temperature: 0.8
