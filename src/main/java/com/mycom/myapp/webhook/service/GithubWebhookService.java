@@ -16,7 +16,6 @@ import com.mycom.myapp.gemini.service.AiCommitAnalysisService;
 import com.mycom.myapp.gitRepository.entity.GitRepository;
 import com.mycom.myapp.gitRepository.repository.GitRepositoryRepository;
 import com.mycom.myapp.webhook.dto.WebhookPayloadDto;
-import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +29,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -67,6 +67,7 @@ public class GithubWebhookService {
         String[] parts = isValidRepoFullName(repoFullName);
         String owner = parts[0];
         String repo = parts[1];
+        log.info("[createWebhook] 웹훅 생성 요청을 시작합니다. repo: {}", repo);
 
         Mono<String> createWebhookMono = webClient.post()
                 .uri(githubApiBaseUrl + "/repos/{owner}/{repo}/hooks", owner, repo)
@@ -103,11 +104,11 @@ public class GithubWebhookService {
     @Async("taskExecutor")
     public CompletableFuture<Void> processPushEvent(WebhookPayloadDto.PushPayload payload) {
         String repoFullName = payload.getRepository().getFullName();
-        log.info("[Webhook] Processing push event for repository: {}", repoFullName);
+        log.info("[Webhook] push 이벤트에 대한 처리를 시작합니다. repository: {}", repoFullName);
 
         GitRepository repository = gitRepositoryRepository.findByRepoFullName(repoFullName)
                 .orElseThrow(() -> {
-                    log.error("[Webhook] Repository not found in DB: {}", repoFullName);
+                    log.error("[Webhook] 리포지토리를 찾을 수 없습니다. repo: {}", repoFullName);
                     return new RepositoryNotFoundException(ErrorCode.REPOSITORY_NOT_FOUND);
                 });
 
@@ -116,14 +117,14 @@ public class GithubWebhookService {
         for (WebhookPayloadDto.CommitInfo commitInfo : payload.getCommits()) {
             String commitSha = commitInfo.getId();
             if (commitRepository.existsByCommitSha(commitSha)) {
-                log.info("[Webhook] Commit {} already processed. Skipping.", commitSha);
+                log.info("[Webhook] Commit {} 은 이미 처리되었습니다. Skip.", commitSha);
                 continue;
             }
 
             // 1. GitHub에서 Diff 정보 가져오기
             String diffContent = gitHubApiService.getCommitDiff(repoFullName, commitSha, accessToken).block();
             if (diffContent == null || diffContent.isEmpty()) {
-                log.warn("[Webhook] Diff content is empty for commit {}. Skipping analysis.", commitSha);
+                log.warn("[Webhook] Diff 내용이 비어있습니다. {}. Skip.", commitSha);
                 continue;
             }
 
@@ -151,15 +152,15 @@ public class GithubWebhookService {
                     .status("ANALYZED")
                     .build();
             Commit savedCommit = commitRepository.save(commit);
-            log.info("[DB] Saved commit {} for repo {}", savedCommit.getCommitSha(), repository.getRepoFullName());
+            log.info("[saveCommitAnalysis] commit {} 을 저장했습니다. repo {}", savedCommit.getCommitSha(), repository.getRepoFullName());
 
             // Diff를 파싱하여 CommitFile 저장
             List<CommitFile> commitFiles = parseDiffAndCreateFiles(diffContent, savedCommit);
             commitFileRepository.saveAll(commitFiles);
-            log.info("[DB] Saved {} file changes for commit {}", commitFiles.size(), savedCommit.getCommitSha());
+            log.info("[saveCommitAnalysis] {} 개의 file changes를 저장했습니다. commit {}", commitFiles.size(), savedCommit.getCommitSha());
 
         } catch (JsonProcessingException e) {
-            log.error("Error serializing analysis details to JSON", e);
+            log.error("[saveCommitAnalysis] AI 분석 결과 JSON을 파싱하는 과정에서 오류가 발생했습니다.", e);
             throw new JsonParsingException(ErrorCode.JSON_PARSING_ERROR);
         }
     }
@@ -189,7 +190,7 @@ public class GithubWebhookService {
     private String[] isValidRepoFullName(String repoFullName) {
         String[] parts = repoFullName.split("/");
         if (parts.length != 2) {
-            log.error("[isValidRepoFullName] Invalid repository full name: {}", repoFullName);
+            log.error("[isValidRepoFullName] 유효하지 않은 리포지토리 이름입니다. repo: {}", repoFullName);
             throw new InvalidRepositoryNameException(ErrorCode.INVALID_REPOSITORY_NAME);
         }
         return parts;
@@ -210,7 +211,7 @@ public class GithubWebhookService {
         return response.bodyToMono(String.class)
                 .defaultIfEmpty("[Empty Response Body]")
                 .map(errorBody -> {
-                    log.error("GitHub API Error: Status Code = {}, Response Body = {}", response.statusCode(), errorBody);
+                    log.error("[logGithubError] GitHub API Error: Status Code = {}, Response Body = {}", response.statusCode(), errorBody);
                     return errorBody;
                 });
     }

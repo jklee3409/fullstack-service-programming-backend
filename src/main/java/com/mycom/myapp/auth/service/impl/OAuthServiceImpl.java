@@ -5,11 +5,11 @@ import com.mycom.myapp.auth.dto.AuthTokens;
 import com.mycom.myapp.user.entity.User;
 import com.mycom.myapp.auth.service.OAuthService;
 import com.mycom.myapp.user.service.impl.UserServiceImpl;
-import jakarta.transaction.Transactional;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -24,13 +24,13 @@ public class OAuthServiceImpl implements OAuthService {
     public AuthTokens loginWithGithub(String code) {
         Map<String, String> tokenResponse = githubClient.getAccessToken(code);
         String githubAccessToken = tokenResponse.get("access_token");
-        log.info("GitHub access token received");
+        log.info("[loginWithGithub] Github access token을 받았습니다.");
 
         Map<String, Object> userInfo = githubClient.getUserInfo(githubAccessToken);
-        log.info("GitHub user info retrieved: {}", userInfo);
+        log.info("[loginWithGithub] GitHub 사용자 정보가 도착했습니다: {}", userInfo);
 
         User user = userService.getOrRegisterUser(userInfo);
-        log.info("Authenticated User ID: {}", user.getId());
+        log.info("[loginWithGithub] Authenticated User ID: {}", user.getId());
 
         user.updateGithubAccessToken(githubAccessToken);
 

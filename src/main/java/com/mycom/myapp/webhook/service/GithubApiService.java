@@ -23,13 +23,14 @@ public class GithubApiService {
     private String githubApiBaseUrl;
 
     public Mono<String> getCommitDiff(String repoFullName, String commitSha, String accessToken) {
-        log.info("Fetching commit diff for repo: {}, commit: {}", repoFullName, commitSha);
+        log.info("[getCommitDiff] 커밋 변경 내역을 조회를 시작합니다. repo: {}, commit: {}", repoFullName, commitSha);
 
         String[] parts = repoFullName.split("/", 2);
         if (parts.length != 2) throw new InvalidRepositoryNameException(ErrorCode.INVALID_REPOSITORY_NAME);
 
         String owner = parts[0];
         String repo  = parts[1];
+        log.info("[getCommitDiff] owner: {}, repo: {}", owner, repo);
 
         return webClient.get()
                 .uri(builder -> builder
