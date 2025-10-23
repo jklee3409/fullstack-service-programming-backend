@@ -1,6 +1,7 @@
 package com.mycom.myapp.commit.dto.response;
 
 import com.mycom.myapp.commit.dto.CommitFileDto;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,5 +18,5 @@ public class GetCommitDetailResponseDto {
     private String summary;
     private String analysisDetails;
     private String commitUrl;
-    private CommitFileDto commitFile;
+    private List<CommitFileDto> commitFile;
 }

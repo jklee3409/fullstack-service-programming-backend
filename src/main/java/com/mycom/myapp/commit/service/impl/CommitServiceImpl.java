@@ -100,10 +100,8 @@ public class CommitServiceImpl implements CommitService {
         }
 
         String commitUrl = repository.getRepoUrl() + "/commit/" + commit.getCommitSha();
-        CommitFile commitFile = commitFileRepository.findByCommitId(commitId)
-                .orElse(null);
-        log.info("[getCommitDetail] 커밋 파일 조회 완료. commitFileId: {}",
-                commitFile != null ? commitFile.getId() : "없음");
+        List<CommitFile> commitFileList = commitFileRepository.findByCommitId(commitId);
+        log.info("[getCommitDetail] 커밋 파일 {}개 조회 완료.", commitFileList.size());
 
         return GetCommitDetailResponseDto.builder()
                 .commitId(commit.getId())
@@ -114,7 +112,12 @@ public class CommitServiceImpl implements CommitService {
                 .summary(commit.getSummary())
                 .analysisDetails(commit.getAnalysisDetails())
                 .commitUrl(commitUrl)
-                .commitFile(CommitFileDto.fromEntity(commitFile))
+                .commitFile(commitFileList.stream()
+                        .map(file -> CommitFileDto.builder()
+                                .commitFileId(file.getId())
+                                .filename(file.getFilename())
+                                .build())
+                        .toList())
                 .build();
     }
 }
