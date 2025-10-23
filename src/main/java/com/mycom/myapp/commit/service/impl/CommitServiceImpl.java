@@ -89,6 +89,7 @@ public class CommitServiceImpl implements CommitService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GetCommitDetailResponseDto getCommitDetail(Long commitId, String githubId) {
         Commit commit = commitRepository.findById(commitId)
                 .orElseThrow(() -> new CommitNotFoundException(ErrorCode.COMMIT_NOT_FOUND));
