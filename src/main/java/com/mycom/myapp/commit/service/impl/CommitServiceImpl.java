@@ -1,12 +1,17 @@
 package com.mycom.myapp.commit.service.impl;
 
+import com.mycom.myapp.commit.dto.CommitFileDto;
 import com.mycom.myapp.commit.dto.CommitGroupDto;
 import com.mycom.myapp.commit.dto.CommitGroupPageDto;
 import com.mycom.myapp.commit.dto.response.CommitResponseDto;
+import com.mycom.myapp.commit.dto.response.GetCommitDetailResponseDto;
 import com.mycom.myapp.commit.entity.Commit;
+import com.mycom.myapp.commit.entity.CommitFile;
+import com.mycom.myapp.commit.repository.CommitFileRepository;
 import com.mycom.myapp.commit.repository.CommitRepository;
 import com.mycom.myapp.commit.service.CommitService;
 import com.mycom.myapp.common.exception.code.ErrorCode;
+import com.mycom.myapp.common.exception.custom.commit.CommitNotFoundException;
 import com.mycom.myapp.common.exception.custom.gitRepo.RepositoryAccessDeniedException;
 import com.mycom.myapp.common.exception.custom.gitRepo.RepositoryNotFoundException;
 import com.mycom.myapp.gitRepository.entity.GitRepository;
@@ -30,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommitServiceImpl implements CommitService {
     private final CommitRepository commitRepository;
+    private final CommitFileRepository commitFileRepository;
     private final GitRepositoryRepository gitRepositoryRepository;
 
     @Override
@@ -79,6 +85,36 @@ public class CommitServiceImpl implements CommitService {
                 .currentPage(commitPage.getNumber())
                 .totalPages(commitPage.getTotalPages())
                 .hasNext(commitPage.hasNext())
+                .build();
+    }
+
+    @Override
+    public GetCommitDetailResponseDto getCommitDetail(Long commitId, String githubId) {
+        Commit commit = commitRepository.findById(commitId)
+                .orElseThrow(() -> new CommitNotFoundException(ErrorCode.COMMIT_NOT_FOUND));
+        log.info("[getCommitDetail] 커밋 조회 완료. commitSha: {}", commit.getCommitSha());
+
+        GitRepository repository = commit.getGitRepository();
+        if (!repository.getUser().getGithubId().equals(githubId)) {
+            throw new RepositoryAccessDeniedException(ErrorCode.REPOSITORY_ACCESS_DENIED);
+        }
+
+        String commitUrl = repository.getRepoUrl() + "/commit/" + commit.getCommitSha();
+        CommitFile commitFile = commitFileRepository.findByCommitId(commitId)
+                .orElse(null);
+        log.info("[getCommitDetail] 커밋 파일 조회 완료. commitFileId: {}",
+                commitFile != null ? commitFile.getId() : "없음");
+
+        return GetCommitDetailResponseDto.builder()
+                .commitId(commit.getId())
+                .commitSha(commit.getCommitSha())
+                .authorName(commit.getAuthorName())
+                .authorEmail(commit.getAuthorEmail())
+                .originalCommitMessage(commit.getOriginalCommitMessage())
+                .summary(commit.getSummary())
+                .analysisDetails(commit.getAnalysisDetails())
+                .commitUrl(commitUrl)
+                .commitFile(CommitFileDto.fromEntity(commitFile))
                 .build();
     }
 }
