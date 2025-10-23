@@ -3,6 +3,7 @@ package com.mycom.myapp.common.exception;
 import com.mycom.myapp.common.dto.base.BaseResponseDto;
 import com.mycom.myapp.common.dto.base.ErrorResponseDto;
 import com.mycom.myapp.common.exception.custom.auth.CustomJwtException;
+import com.mycom.myapp.common.exception.custom.commit.CommitNotFoundException;
 import com.mycom.myapp.common.exception.custom.gemini.GeminiApiException;
 import com.mycom.myapp.common.exception.custom.gitRepo.DuplicationRepositoryException;
 import com.mycom.myapp.common.exception.custom.gitRepo.InvalidRepositoryNameException;
@@ -70,6 +71,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RepositoryAccessDeniedException.class)
     public BaseResponseDto<ErrorResponseDto> handleRepositoryAccessDeniedException(RepositoryAccessDeniedException e) {
+        log.error(e.getMessage(), e);
+        return BaseResponseDto.fail(e.getErrorCode());
+    }
+
+    @ExceptionHandler(CommitNotFoundException.class)
+    public BaseResponseDto<ErrorResponseDto> handleCommitNotFoundException(CommitNotFoundException e) {
         log.error(e.getMessage(), e);
         return BaseResponseDto.fail(e.getErrorCode());
     }
