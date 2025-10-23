@@ -2,6 +2,7 @@ package com.mycom.myapp.commit.controller;
 
 import com.mycom.myapp.auth.config.CustomUserDetails;
 import com.mycom.myapp.commit.dto.CommitGroupPageDto;
+import com.mycom.myapp.commit.dto.response.GetCommitDetailResponseDto;
 import com.mycom.myapp.commit.service.CommitService;
 import com.mycom.myapp.common.dto.base.BaseResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,19 @@ public class CommitController {
                 repositoryId, page, size, githubId);
 
         CommitGroupPageDto response = commitService.getCommitsSummariesByRepository(repositoryId, githubId, page, size);
+        return BaseResponseDto.success(response);
+    }
+
+    @GetMapping("/commits/{commitId}")
+    @Operation(summary = "커밋 상세 조회 API", description = "특정 커밋의 상세 정보를 반환합니다.")
+    public BaseResponseDto<GetCommitDetailResponseDto> getCommitDetail(
+            @PathVariable Long commitId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        String githubId = userDetails.getUsername();
+        log.info("[getCommitDetail] 커밋 상세 조회 요청: commitId={}, githubId={}", commitId, githubId);
+
+        GetCommitDetailResponseDto response = commitService.getCommitDetail(commitId, githubId);
         return BaseResponseDto.success(response);
     }
 }
