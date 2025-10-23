@@ -30,7 +30,10 @@ public enum ErrorCode {
     JSON_PARSING_ERROR(40001, "JSON_PARSING_ERROR", "JSON 파싱 중 오류가 발생했습니다."),
 
     // 50000 ~ 59999: Gemini API
-    GEMINI_API_ERROR(50000,  "GEMINI_API_ERROR", "Gemini API 호출 중 오류가 발생했습니다.");
+    GEMINI_API_ERROR(50000,  "GEMINI_API_ERROR", "Gemini API 호출 중 오류가 발생했습니다."),
+
+    // 60000 ~ 69999: Commit
+    COMMIT_NOT_FOUND(60000, "COMMIT_NOT_FOUND", "커밋을 찾을 수 없습니다.");
 
     private final int code;
     private final String name;
