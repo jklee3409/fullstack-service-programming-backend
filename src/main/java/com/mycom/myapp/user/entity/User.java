@@ -43,6 +43,9 @@ public class User extends BaseEntity {
     @Column(name = "github_access_token")
     private String githubAccessToken;
 
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     public User update(String nickname, String avatarUrl) {
         this.nickname = nickname;
         this.avatarUrl = avatarUrl;
@@ -52,4 +55,7 @@ public class User extends BaseEntity {
     public void updateGithubAccessToken(String githubAccessToken) {
         this.githubAccessToken = githubAccessToken;
     }
-}
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
