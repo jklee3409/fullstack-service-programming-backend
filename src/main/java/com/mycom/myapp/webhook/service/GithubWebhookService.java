@@ -128,8 +128,8 @@ public class GithubWebhookService {
                 continue;
             }
 
-            // 2. Gemini API로 Diff 분석 요청
-            AiCommitAnalysisDto analysisResult = aiCommitAnalysisService.analyzeCommitDiff(diffContent);
+            // 2. Gemini API로 Diff 분석 요청 및 알림 생성
+            AiCommitAnalysisDto analysisResult = aiCommitAnalysisService.analyzeCommitDiff(repository, diffContent);
 
             // 3. 분석 결과 DB에 저장
             saveCommitAnalysis(repository, commitInfo, analysisResult, diffContent);
