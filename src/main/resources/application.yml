@@ -49,3 +49,6 @@ webhook:
 springdoc:
   swagger-ui:
     path: ${SWAGGER_PATH}
+
+firebase:
+  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH}

@@ -55,6 +55,9 @@ dependencies {
     // Spring AI & Gemini
     implementation 'org.springframework.ai:spring-ai-starter-model-google-genai'
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
     // Test
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
