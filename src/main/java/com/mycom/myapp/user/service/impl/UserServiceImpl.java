@@ -2,6 +2,8 @@ package com.mycom.myapp.user.service.impl;
 
 import static com.mycom.myapp.auth.entity.enums.Role.ROLE_USER;
 
+import com.mycom.myapp.common.exception.code.ErrorCode;
+import com.mycom.myapp.common.exception.custom.user.UserNotFoundException;
 import com.mycom.myapp.user.entity.User;
 import com.mycom.myapp.user.repository.UserRepository;
 import com.mycom.myapp.user.service.UserService;
@@ -42,5 +44,18 @@ public class UserServiceImpl implements UserService {
             log.info("[getOrRegisterUser] 사용자 등록을 완료했습니다. GitHub ID: {}", githubId);
             return userRepository.save(newUser);
         }
+    }
+
+    @Transactional
+    @Override
+    public void updateFcmToken(String githubId, String fcmToken) {
+        User user = findUserByGithubId(githubId);
+        log.info("[updateFcmToken] 사용자 {} 에 대한 FCM 토큰을 갱신합니다.", user.getId());
+        user.updateFcmToken(fcmToken);
+    }
+
+    private User findUserByGithubId(String githubId) {
+        return userRepository.findByGithubId(githubId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 }
