@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GitInsight 계정 및 데이터 삭제 요청</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 0 16px;
+            line-height: 1.6;
+            color: #111827;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        h2 {
+            font-size: 18px;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+        p {
+            margin: 4px 0 8px;
+        }
+        ol, ul {
+            padding-left: 18px;
+        }
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 16px 18px;
+            background: #f9fafb;
+            margin-top: 12px;
+        }
+        .highlight {
+            font-weight: 600;
+        }
+        code {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            background: #f3f4f6;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+<h1>GitInsight 계정 및 데이터 삭제 요청</h1>
+
+<p>
+    이 페이지는 Google Play 데이터 보안 정책에 따라,
+    사용자가 GitInsight에서 계정 및 관련 데이터를 삭제 요청하는 방법을 안내하기 위해 제공됩니다.
+</p>
+
+<h2>1. 계정 및 데이터 개요</h2>
+<div class="card">
+    <p class="highlight">GitInsight는 GitHub OAuth를 사용하여 사용자를 인증합니다.</p>
+    <p>앱은 다음과 같은 정보를 서버에 저장할 수 있습니다.</p>
+    <ul>
+        <li>GitHub 사용자 ID 및 공개 프로필 정보</li>
+        <li>저장소 및 커밋 메타데이터 (예: 저장소 이름, 커밋 메시지 요약)</li>
+        <li>앱 사용과 관련된 로그 및 통계 데이터</li>
+    </ul>
+</div>
+
+<h2>2. 계정 및 데이터 삭제 요청 방법</h2>
+<p>계정 및 관련 데이터 삭제를 원하시는 경우, 아래 방법 중 하나로 요청하실 수 있습니다.</p>
+
+<div class="card">
+    <ol>
+        <li>
+            이메일을 통해 요청<br>
+            다음 이메일 주소로 삭제 요청 메일을 보내주세요.<br>
+            <span class="highlight">이메일 주소:</span>
+            <code>support@gitinsight.app</code>
+        </li>
+        <li>
+            이메일 제목에 다음 내용을 포함해 주세요.<br>
+            <code>[GitInsight] 계정 및 데이터 삭제 요청</code>
+        </li>
+        <li>
+            이메일 본문에 아래 정보를 포함해 주세요.
+            <ul>
+                <li>GitHub 사용자명(GitHub username)</li>
+                <li>GitInsight에서 사용 중인 이메일 주소 (있을 경우)</li>
+                <li>삭제를 원하는 데이터 범위 (예: 전체 계정 및 관련 데이터 삭제)</li>
+            </ul>
+        </li>
+    </ol>
+</div>
+
+<h2>3. 처리 기간 및 보관 기간</h2>
+<div class="card">
+    <ul>
+        <li>요청 접수 후 <span class="highlight">최대 30일 이내</span>에 계정 및 관련 데이터를 삭제합니다.</li>
+        <li>법적·기술적 이유로 즉시 삭제할 수 없는 데이터는,
+            관련 법령에서 요구하는 기간 동안만 보관 후 안전하게 삭제합니다.</li>
+    </ul>
+</div>
+
+<h2>4. 문의</h2>
+<p>
+    계정 삭제와 관련하여 추가 문의 사항이 있을 경우,
+    <code>support@gitinsight.app</code> 으로 연락해 주시면 됩니다.
+</p>
+
+</body>
+</html>
